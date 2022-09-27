@@ -1,10 +1,17 @@
 const todoForm = document.querySelector("#makeTodo");
 const todoInput = todoForm.querySelector("input");
 const todoListBox = document.querySelector("#todoList");
+const todoUl = todoListBox.querySelector("#todoUl");
+const todoItem = todoUl.querySelector(".todo-item-div");
 const todoBtn = document.querySelector(".makeToDoBtn");
-const updateBtn = document.querySelector("#update");
-let isReady = false;
-const todoList = [];
+let editedId = "";
+let todoList = [];
+const todoItems = localStorage.getItem("todo") || null;
+
+//todo저장
+const saveTodo = () => {
+  localStorage.setItem("todo", JSON.stringify(todoList));
+};
 
 //todo빈값방지
 const checkBlank = (strings) => {
@@ -29,47 +36,52 @@ const makeTodo = (event) => {
       isDone: false,
     };
     todoList.push(newTodo);
+    saveTodo();
     showTodo(newTodo);
   }
 };
 
 //만든 todo 보여주기
 const showTodo = (newTodo) => {
-  const div = document.createElement("div");
-  div.id = newTodo.id;
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  const input = document.createElement("input");
-  input.value = newTodo.task;
-  input.type = "text";
-  input.id = "todoItem";
-  input.addEventListener("click", updateTodo);
-  const deleteBtn = document.createElement("button");
-  deleteBtn.innerHTML = "삭제";
-  deleteBtn.addEventListener("click", deleteTodo);
-  div.appendChild(checkbox);
-  div.appendChild(input);
-  div.appendChild(deleteBtn);
-  todoListBox.append(div);
+  const { task, id, isDone } = newTodo;
+  const todoComponent = `<li class="todo-item-list"  id=${id}>
+  <div class="todo-item-div">
+    <input type="checkbox" ${isDone && "checked"} />
+    <div class="todo-text-div">${task}</div>
+  </div>
+<div>
+<button onclick="updateTodo(this)" >📝</button>
+<button onclick="deleteTodo(this)" >❌</button>
+</div>
+</li>`;
+  todoUl.innerHTML += todoComponent;
 };
 
-//todo update
+//이전todo 보여줌
+if (todoItems !== null) {
+  let storageItems = JSON.parse(localStorage.getItem("todo"));
+  todoList = storageItems;
+  storageItems.forEach(showTodo);
+}
+
+//todo update ready
 const updateTodo = (e) => {
-  const { parentElement } = e.target;
-  const { id } = parentElement;
-  const updateTodos = parentElement.querySelector("#todoItem").value;
-  let todoItem = todoList.find((item) => item.id === parseInt(id));
-  todoItem.task = updateTodos;
+  const { parentElement } = e;
+  const { id } = e.parentElement.parentElement;
+  const getTodo = e.parentElement.parentElement.querySelector(".todo-text-div");
+  e.parentElement.parentElement.style.backgroundColor = "#EBECF0";
+  todoInput.value = getTodo.innerHTML;
 };
 
 //delete
 const deleteTodo = (e) => {
-  const { parentElement } = e.target;
-  const { id } = e.target.parentElement;
-  parentElement.remove();
-  //apix경우
-  todoList.filter((item) => item.id !== parseInt(id));
+  const { parentElement } = e;
+  const { id } = e.parentElement.parentElement;
+  parentElement.parentElement.remove();
+  todoList = todoList.filter((item) => item.id !== parseInt(id));
+  saveTodo();
 };
 
 todoForm.addEventListener("submit", makeTodo);
+
 todoBtn.addEventListener("click", makeTodo);
