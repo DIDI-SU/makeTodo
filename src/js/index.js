@@ -6,6 +6,8 @@ const todoItem = todoUl.querySelector(".todo-item-div");
 const todoBtn = document.querySelector(".makeToDoBtn");
 let editedId = "";
 let todoList = [];
+let isEdit = false;
+let editedText = "";
 const todoItems = localStorage.getItem("todo") || null;
 
 //todo저장
@@ -25,20 +27,22 @@ const checkBlank = (strings) => {
 const makeTodo = (event) => {
   event.preventDefault();
   const inputString = todoInput.value;
-  if (!checkBlank(inputString)) {
-    alert("내용을 입력해주세요");
-    todoInput.value = "";
-  } else {
-    todoInput.value = "";
-    const newTodo = {
-      id: Date.now(),
-      task: inputString,
-      isDone: false,
-    };
-    todoList.push(newTodo);
-    saveTodo();
-    showTodo(newTodo);
-  }
+  if (!isEdit) {
+    if (!checkBlank(inputString)) {
+      alert("내용을 입력해주세요");
+      todoInput.value = "";
+    } else {
+      todoInput.value = "";
+      const newTodo = {
+        id: Date.now(),
+        task: inputString,
+        isDone: false,
+      };
+      todoList.push(newTodo);
+      saveTodo();
+      showTodo(newTodo);
+    }
+  } else update(inputString);
 };
 
 //만든 todo 보여주기
@@ -66,11 +70,27 @@ if (todoItems !== null) {
 
 //todo update ready
 const updateTodo = (e) => {
+  isEdit = true;
   const { parentElement } = e;
   const { id } = e.parentElement.parentElement;
   const getTodo = e.parentElement.parentElement.querySelector(".todo-text-div");
   e.parentElement.parentElement.style.backgroundColor = "#EBECF0";
   todoInput.value = getTodo.innerHTML;
+  editedId = id;
+};
+
+const update = (text) => {
+  let copyList = [...todoList];
+  copyList.forEach((item) => {
+    if (item.id === parseInt(editedId)) {
+      item.task = text;
+    }
+  });
+  isEdit = false;
+  todoList = copyList;
+  todoInput.value = "";
+  saveTodo();
+  history.go(0);
 };
 
 //delete
@@ -82,6 +102,7 @@ const deleteTodo = (e) => {
   saveTodo();
 };
 
+todoForm.addEventListener("submit", makeTodo);
 todoForm.addEventListener("submit", makeTodo);
 
 todoBtn.addEventListener("click", makeTodo);

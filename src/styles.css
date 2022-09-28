@@ -555,13 +555,6 @@ video {
 .p-5 {
   padding: 1.25rem;
 }
-.p-1 {
-  padding: 0.25rem;
-}
-.py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
@@ -577,22 +570,4 @@ video {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
     var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
     var(--tw-sepia) var(--tw-drop-shadow);
-}
-
-.todo-item-list {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.25rem 0rem;
-}
-
-.todo-item-div {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  padding: 0.8rem 0rem;
-}
-
-.todo-text-div {
-  margin: 0rem 1rem;
 }
