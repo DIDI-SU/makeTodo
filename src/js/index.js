@@ -2,12 +2,13 @@ const todoForm = document.querySelector("#makeTodo");
 const todoInput = todoForm.querySelector("input");
 const todoListBox = document.querySelector("#todoList");
 const todoUl = todoListBox.querySelector("#todoUl");
+const checkedBox = todoUl.querySelectorAll("#checkedbox");
 const todoItem = todoUl.querySelector(".todo-item-div");
 const todoBtn = document.querySelector(".makeToDoBtn");
 let editedId = "";
 let todoList = [];
 let isEdit = false;
-let editedText = "";
+
 const todoItems = localStorage.getItem("todo") || null;
 
 //todo저장
@@ -42,7 +43,7 @@ const makeTodo = (event) => {
       saveTodo();
       showTodo(newTodo);
     }
-  } else update(inputString);
+  } else updateTodo(inputString);
 };
 
 //만든 todo 보여주기
@@ -54,7 +55,7 @@ const showTodo = (newTodo) => {
     <div class="todo-text-div">${task}</div>
   </div>
 <div>
-<button onclick="updateTodo(this)" >📝</button>
+<button onclick="updateReadyTodo(this)" >📝</button>
 <button onclick="deleteTodo(this)" >❌</button>
 </div>
 </li>`;
@@ -69,9 +70,8 @@ if (todoItems !== null) {
 }
 
 //todo update ready
-const updateTodo = (e) => {
+const updateReadyTodo = (e) => {
   isEdit = true;
-  const { parentElement } = e;
   const { id } = e.parentElement.parentElement;
   const getTodo = e.parentElement.parentElement.querySelector(".todo-text-div");
   e.parentElement.parentElement.style.backgroundColor = "#EBECF0";
@@ -79,7 +79,7 @@ const updateTodo = (e) => {
   editedId = id;
 };
 
-const update = (text) => {
+const updateTodo = (text) => {
   let copyList = [...todoList];
   copyList.forEach((item) => {
     if (item.id === parseInt(editedId)) {
@@ -104,5 +104,4 @@ const deleteTodo = (e) => {
 
 todoForm.addEventListener("submit", makeTodo);
 todoForm.addEventListener("submit", makeTodo);
-
 todoBtn.addEventListener("click", makeTodo);

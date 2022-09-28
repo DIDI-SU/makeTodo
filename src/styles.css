@@ -571,3 +571,20 @@ video {
     var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
     var(--tw-sepia) var(--tw-drop-shadow);
 }
+.todo-item-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0rem;
+}
+
+.todo-item-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 0.8rem 0rem;
+}
+
+.todo-text-div {
+  margin: 0rem 1rem;
+}
