@@ -1,15 +1,23 @@
 const todoForm = document.querySelector("#makeTodo");
 const todoInput = todoForm.querySelector("input");
+//todoList
 const todoListBox = document.querySelector("#todoList");
 const todoUl = todoListBox.querySelector("#todoUl");
 const checkedBox = todoUl.querySelectorAll("#checkedbox");
 const todoItem = todoUl.querySelector(".todo-item-div");
-const todoBtn = document.querySelector(".makeToDoBtn");
+//heratBtn
+const btnBox = document.querySelector("#btn-box");
+const todoBtn = btnBox.querySelector("#makeToDoBtn");
+const checkedAll = btnBox.querySelector("#checkAll");
+const filterBtn = btnBox.querySelector("#filterCheck");
+
+const todoCount = document.querySelector("#todoCount");
+
 let editedId = "";
 let todoList = [];
 let isEdit = false;
 
-const todoItems = localStorage.getItem("todo") || null;
+const todoItems = JSON.parse(localStorage.getItem("todo")) || null;
 
 //todo저장
 const saveTodo = () => {
@@ -28,11 +36,11 @@ const checkBlank = (strings) => {
 const makeTodo = (event) => {
   event.preventDefault();
   const inputString = todoInput.value;
-  if (!isEdit) {
-    if (!checkBlank(inputString)) {
-      alert("내용을 입력해주세요");
-      todoInput.value = "";
-    } else {
+  if (!checkBlank(inputString)) {
+    alert("내용을 입력해주세요");
+    todoInput.value = "";
+  } else {
+    if (!isEdit) {
       todoInput.value = "";
       const newTodo = {
         id: Date.now(),
@@ -40,29 +48,50 @@ const makeTodo = (event) => {
         isDone: false,
       };
       todoList.push(newTodo);
-      saveTodo();
       showTodo(newTodo);
-    }
-  } else updateTodo(inputString);
+      saveTodo();
+    } else updateTodo(inputString);
+  }
+};
+
+const renderTodo = (todoLists) => {
+  todoUl.innerHTML = "";
+  console.log(todoLists);
+  todoLists.forEach(({ id, task, isDone }) => {
+    return (todoUl.innerHTML += `<li class="todo-item-list"  id=${id}>
+    <div class="todo-item-div">
+      <input class=" mx-2" type="checkbox" ${
+        isDone && "checked"
+      }  onclick="completeTodo(this)"/>
+      <div class="${isDone && "todo-text-div"}">${task}</div>
+    </div>
+  <div>
+  <button onclick="updateReadyTodo(this)" type="button" >📝</button>
+  <button onclick="deleteTodo(this)"  type="button">❌</button>
+  </div>
+  </li>`);
+  });
 };
 
 //만든 todo 보여주기
-const showTodo = (newTodo) => {
-  const { task, id, isDone } = newTodo;
-  const todoComponent = `<li class="todo-item-list"  id=${id}>
-  <div class="todo-item-div">
-    <input type="checkbox" ${isDone && "checked"} />
-    <div class="todo-text-div">${task}</div>
+const showTodo = (newTodos) => {
+  const { id, task, isDone } = newTodos;
+  let todoComponent = `<li class="todo-item-list"  id=${id}>
+    <div class="todo-item-div">
+      <input class=" mx-2" type="checkbox" ${
+        isDone && "checked"
+      }  onclick="completeTodo(this)"/>
+      <div id="todo-text"  class="${isDone && "todo-text-div"}">${task}</div>
+    </div>
+  <div>
+  <button onclick="updateReadyTodo(this)" type="button" >📝</button>
+  <button onclick="deleteTodo(this)"  type="button">❌</button>
   </div>
-<div>
-<button onclick="updateReadyTodo(this)" >📝</button>
-<button onclick="deleteTodo(this)" >❌</button>
-</div>
-</li>`;
+  </li>`;
+
   todoUl.innerHTML += todoComponent;
 };
 
-//이전todo 보여줌
 if (todoItems !== null) {
   let storageItems = JSON.parse(localStorage.getItem("todo"));
   todoList = storageItems;
@@ -73,24 +102,24 @@ if (todoItems !== null) {
 const updateReadyTodo = (e) => {
   isEdit = true;
   const { id } = e.parentElement.parentElement;
-  const getTodo = e.parentElement.parentElement.querySelector(".todo-text-div");
+  const getTodo = e.parentElement.parentElement.querySelector("#todo-text");
+
   e.parentElement.parentElement.style.backgroundColor = "#EBECF0";
   todoInput.value = getTodo.innerHTML;
   editedId = id;
 };
 
 const updateTodo = (text) => {
-  let copyList = [...todoList];
-  copyList.forEach((item) => {
+  todoList.forEach((item) => {
     if (item.id === parseInt(editedId)) {
       item.task = text;
     }
   });
   isEdit = false;
-  todoList = copyList;
+  editedId = "";
   todoInput.value = "";
   saveTodo();
-  history.go(0);
+  renderTodo(todoList);
 };
 
 //delete
@@ -102,6 +131,34 @@ const deleteTodo = (e) => {
   saveTodo();
 };
 
+//todoList전체 완료 혹은 전체 취소
+const checkAll = () => {
+  todoList.forEach((item) => (item.isDone = true));
+  saveTodo();
+  renderTodo(todoList);
+};
+
+//todo 일부 체크 기능
+const completeTodo = (e) => {
+  const { id } = e.parentElement.parentElement;
+  todoList.forEach((item) => {
+    if (item.id === parseInt(id)) {
+      item.isDone = !item.isDone;
+    }
+  });
+  saveTodo();
+  renderTodo(todoList);
+};
+
+//filter
+const filterTodo = () => {
+  todoList.sort((a, b) => b.isDone - a.isDone);
+  saveTodo();
+  renderTodo(todoList);
+};
+
 todoForm.addEventListener("submit", makeTodo);
 todoForm.addEventListener("submit", makeTodo);
 todoBtn.addEventListener("click", makeTodo);
+checkedAll.addEventListener("click", checkAll);
+filterBtn.addEventListener("click", filterTodo);

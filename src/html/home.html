@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="make todo list" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script defer src="js/index.js"></script>
     <link rel="stylesheet" href="styles.css" />
@@ -22,22 +23,21 @@
           />
         </form>
       </div>
-      <div><button class="makeToDoBtn">Make to do</button></div>
+      <div id="btn-box" class="flex items-center justify-evenly">
+        <button id="makeToDoBtn" class="m-1" type="submit">Enter</button>
+        <button id="checkAll" class="m-1" type="button">All</button>
+        <button class="m-1" type="button" id="filterCheck">Filter</button>
+      </div>
     </header>
     <main>
-      <section
-        id="todoList"
-        class="flex flex-col items-center justify-center mx-auto max-w-3xl p-5"
-      >
-        <ul id="todoUl" class="w-full">
-          <li class="todo-item-list">
-            <div class="todo-item-div">
-              <input id="checkedbox" type="checkbox" />
-              <div class="todo-text-div">오늘의 할일</div>
-            </div>
-            <button>❌</button>
-          </li>
-        </ul>
+      <section id="todoList" class="todo-section">
+        <ul id="todoUl" class="w-full"></ul>
+      </section>
+      <section class="todo-section border-t-2 border-t-[#9ca3af]">
+        <div>
+          <span>완료한 할일 :</span>
+          <span id="todoCount"></span>
+        </div>
       </section>
     </main>
   </body>
