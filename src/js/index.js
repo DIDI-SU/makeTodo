@@ -5,6 +5,7 @@ const todoListBox = document.querySelector("#todoList");
 const todoUl = todoListBox.querySelector("#todoUl");
 const checkedBox = todoUl.querySelectorAll("#checkedbox");
 const todoItem = todoUl.querySelector(".todo-item-div");
+const nothing = todoListBox.querySelector("#nothing");
 //heratBtn
 const btnBox = document.querySelector("#btn-box");
 const todoBtn = btnBox.querySelector("#makeToDoBtn");
@@ -56,14 +57,14 @@ const makeTodo = (event) => {
 
 const renderTodo = (todoLists) => {
   todoUl.innerHTML = "";
-  console.log(todoLists);
+
   todoLists.forEach(({ id, task, isDone }) => {
     return (todoUl.innerHTML += `<li class="todo-item-list"  id=${id}>
     <div class="todo-item-div">
       <input class=" mx-2" type="checkbox" ${
         isDone && "checked"
       }  onclick="completeTodo(this)"/>
-      <div class="${isDone && "todo-text-div"}">${task}</div>
+      <div id="todo-text" class="${isDone && "todo-text-div"}">${task}</div>
     </div>
   <div>
   <button onclick="updateReadyTodo(this)" type="button" >📝</button>
@@ -103,7 +104,6 @@ const updateReadyTodo = (e) => {
   isEdit = true;
   const { id } = e.parentElement.parentElement;
   const getTodo = e.parentElement.parentElement.querySelector("#todo-text");
-
   e.parentElement.parentElement.style.backgroundColor = "#EBECF0";
   todoInput.value = getTodo.innerHTML;
   editedId = id;
