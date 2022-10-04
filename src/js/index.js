@@ -5,6 +5,11 @@ const todoInput = todoForm.querySelector("input");
 const todoListBox = document.querySelector("section");
 const todoUl = todoListBox.querySelector("ul");
 let todoList = [];
+//todo저장
+const saveTodo = () => {
+    localStorage.setItem("TODO", JSON.stringify(todoList));
+};
+const todoItems = localStorage.getItem("TODO");
 //todo빈값확인
 const checkStirings = (text) => {
     if (text.trim().length === 0) {
@@ -51,4 +56,9 @@ const paintTodo = (todoLists) => {
     </li>`);
     });
 };
+if (todoItems) {
+    let storageItems = JSON.parse(todoItems);
+    todoList = storageItems;
+    paintTodo(storageItems);
+}
 todoForm.addEventListener("submit", sumbitTodo);
