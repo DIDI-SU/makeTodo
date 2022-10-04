@@ -1,5 +1,3 @@
-//인터페이스로 받아줄 todo를 만들어 주면 되지 않을까?
-//인터페이스하고 타입의 차이가뭐지
 interface Validate {
   id: number | object;
   task: string;
@@ -50,13 +48,6 @@ const sumbitTodo = (e: Event): object[] | void => {
 };
 
 //renderTodo
-//경우
-//1. 새로 만들어지는 경우 => 전체가 다시 필요는 없어 : 그러면 이경우는 제외해도 ㅇㅋ?
-//2. 수정되는 경우
-//3. 삭제 되는 경우
-//4. 순번이 바뀌는 경우
-//어차피 지금 리스트를 리턴해주니까 그냥 받아서  렌더랑 같이해도 갠춘을것 같음
-
 const paintTodo = (todoLists: object[]) => {
   todoUl.innerHTML = "";
   todoLists.forEach((item: any) => {

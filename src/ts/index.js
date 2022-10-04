@@ -42,12 +42,6 @@ const sumbitTodo = (e) => {
     }
 };
 //renderTodo
-//경우
-//1. 새로 만들어지는 경우 => 전체가 다시 필요는 없어 : 그러면 이경우는 제외해도 ㅇㅋ?
-//2. 수정되는 경우
-//3. 삭제 되는 경우
-//4. 순번이 바뀌는 경우
-//어차피 지금 리스트를 리턴해주니까 그냥 받아서  렌더랑 같이해도 갠춘을것 같음
 const paintTodo = (todoLists) => {
     todoUl.innerHTML = "";
     todoLists.forEach((item) => {
