@@ -11,8 +11,9 @@ const todoInput: HTMLInputElement = todoForm.querySelector("input")!;
 //todoList
 const todoListBox = document.querySelector("section") as HTMLElement;
 const todoUl = todoListBox.querySelector("ul") as HTMLUListElement;
+let isEdit = false;
 let todoList: object[] = [];
-
+let editedId: string = "";
 //todo저장
 const saveTodo = () => {
   localStorage.setItem("TODO", JSON.stringify(todoList));
@@ -36,10 +37,15 @@ const sumbitTodo = (e: Event): object[] | void => {
     alert("내용을 입력해주세요");
     todoInput.value = "";
   } else {
-    const newTodo: Validate = { id: Date.now(), task: task, isDone: false };
-    todoList.push(newTodo);
-    todoInput.value = "";
-    paintTodo(todoList);
+    if (!isEdit) {
+      const newTodo: Validate = { id: Date.now(), task: task, isDone: false };
+      todoList.push(newTodo);
+      todoInput.value = "";
+      saveTodo();
+      paintTodo(todoList);
+    } else {
+      updateTodo(task);
+    }
   }
 };
 
@@ -69,10 +75,35 @@ const paintTodo = (todoLists: object[]) => {
     </li>`);
   });
 };
+
 if (todoItems) {
   let storageItems = JSON.parse(todoItems);
   todoList = storageItems;
   paintTodo(storageItems);
 }
+
+//버튼눌러서 updtae 준비하기
+//todo update ready
+const updateReadyTodo = (e: Node) => {
+  isEdit = true;
+  const parentElements = e.parentElement?.parentElement as HTMLLIElement;
+  const getTodo = parentElements?.querySelector("#todo-text") as HTMLDivElement;
+  todoInput.value = getTodo.innerText;
+  editedId = parentElements.id;
+};
+
+//todo update
+const updateTodo = (text: string) => {
+  todoList.forEach((item: any) => {
+    if (item.id === parseInt(editedId)) {
+      item.task = text;
+    }
+  });
+  isEdit = false;
+  editedId = "";
+  todoInput.value = "";
+  saveTodo();
+  paintTodo(todoList);
+};
 
 todoForm.addEventListener("submit", sumbitTodo);
