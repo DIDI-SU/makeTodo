@@ -106,4 +106,14 @@ const updateTodo = (text: string) => {
   paintTodo(todoList);
 };
 
+//delete
+const deleteTodo = (e: Node) => {
+  const parentElements = e.parentElement?.parentElement as HTMLLIElement;
+  parentElements.remove();
+  todoList = todoList.filter(
+    (item: any) => item.id !== parseInt(parentElements.id)
+  );
+  saveTodo();
+};
+
 todoForm.addEventListener("submit", sumbitTodo);

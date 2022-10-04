@@ -92,4 +92,12 @@ const updateTodo = (text) => {
     saveTodo();
     paintTodo(todoList);
 };
+//delete
+const deleteTodo = (e) => {
+    var _a;
+    const parentElements = (_a = e.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement;
+    parentElements.remove();
+    todoList = todoList.filter((item) => item.id !== parseInt(parentElements.id));
+    saveTodo();
+};
 todoForm.addEventListener("submit", sumbitTodo);
