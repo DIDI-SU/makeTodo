@@ -1,164 +1,54 @@
+"use strict";
 const todoForm = document.querySelector("#makeTodo");
 const todoInput = todoForm.querySelector("input");
 //todoList
-const todoListBox = document.querySelector("#todoList");
-const todoUl = todoListBox.querySelector("#todoUl");
-const checkedBox = todoUl.querySelectorAll("#checkedbox");
-const todoItem = todoUl.querySelector(".todo-item-div");
-const nothing = todoListBox.querySelector("#nothing");
-//heratBtn
-const btnBox = document.querySelector("#btn-box");
-const todoBtn = btnBox.querySelector("#makeToDoBtn");
-const checkedAll = btnBox.querySelector("#checkAll");
-const filterBtn = btnBox.querySelector("#filterCheck");
-
-const todoCount = document.querySelector("#todoCount");
-
-let editedId = "";
+const todoListBox = document.querySelector("section");
+const todoUl = todoListBox.querySelector("ul");
 let todoList = [];
-let isEdit = false;
-
-const todoItems = JSON.parse(localStorage.getItem("todo")) || null;
-
-//todo저장
-const saveTodo = () => {
-  localStorage.setItem("todo", JSON.stringify(todoList));
-};
-
-//todo빈값방지
-const checkBlank = (strings) => {
-  if (strings.trim().length === 0) {
+//todo빈값확인
+const checkStirings = (text) => {
+    if (text.trim().length === 0) {
+        return true;
+    }
     return false;
-  }
-  return strings;
 };
-
-//todo입력
-const makeTodo = (event) => {
-  event.preventDefault();
-  const inputString = todoInput.value;
-  if (!checkBlank(inputString)) {
-    alert("내용을 입력해주세요");
-    todoInput.value = "";
-  } else {
-    if (!isEdit) {
-      todoInput.value = "";
-      const newTodo = {
-        id: Date.now(),
-        task: inputString,
-        isDone: false,
-      };
-      todoList.push(newTodo);
-      showTodo(newTodo);
-      saveTodo();
-    } else updateTodo(inputString);
-  }
-};
-
-const renderTodo = (todoLists) => {
-  todoUl.innerHTML = "";
-
-  todoLists.forEach(({ id, task, isDone }) => {
-    return (todoUl.innerHTML += `<li class="todo-item-list"  id=${id}>
-    <div class="todo-item-div">
-      <input class=" mx-2" type="checkbox" ${
-        isDone && "checked"
-      }  onclick="completeTodo(this)"/>
-      <div id="todo-text" class="${isDone && "todo-text-div"}">${task}</div>
-    </div>
-  <div>
-  <button onclick="updateReadyTodo(this)" type="button" >📝</button>
-  <button onclick="deleteTodo(this)"  type="button">❌</button>
-  </div>
-  </li>`);
-  });
-};
-
-//만든 todo 보여주기
-const showTodo = (newTodos) => {
-  const { id, task, isDone } = newTodos;
-  let todoComponent = `<li class="todo-item-list"  id=${id}>
-    <div class="todo-item-div">
-      <input class=" mx-2" type="checkbox" ${
-        isDone && "checked"
-      }  onclick="completeTodo(this)"/>
-      <div id="todo-text"  class="${isDone && "todo-text-div"}">${task}</div>
-    </div>
-  <div>
-  <button onclick="updateReadyTodo(this)" type="button" >📝</button>
-  <button onclick="deleteTodo(this)"  type="button">❌</button>
-  </div>
-  </li>`;
-
-  todoUl.innerHTML += todoComponent;
-};
-
-if (todoItems !== null) {
-  let storageItems = JSON.parse(localStorage.getItem("todo"));
-  todoList = storageItems;
-  storageItems.forEach(showTodo);
-}
-
-//todo update ready
-const updateReadyTodo = (e) => {
-  isEdit = true;
-  const { id } = e.parentElement.parentElement;
-  const getTodo = e.parentElement.parentElement.querySelector("#todo-text");
-  e.parentElement.parentElement.style.backgroundColor = "#EBECF0";
-  todoInput.value = getTodo.innerHTML;
-  editedId = id;
-};
-
-const updateTodo = (text) => {
-  todoList.forEach((item) => {
-    if (item.id === parseInt(editedId)) {
-      item.task = text;
+//make todo
+// 리턴이 없어서 void인건가?
+const sumbitTodo = (e) => {
+    e.preventDefault();
+    const task = todoInput.value;
+    if (checkStirings(task)) {
+        alert("내용을 입력해주세요");
+        todoInput.value = "";
     }
-  });
-  isEdit = false;
-  editedId = "";
-  todoInput.value = "";
-  saveTodo();
-  renderTodo(todoList);
-};
-
-//delete
-const deleteTodo = (e) => {
-  const { parentElement } = e;
-  const { id } = e.parentElement.parentElement;
-  parentElement.parentElement.remove();
-  todoList = todoList.filter((item) => item.id !== parseInt(id));
-  saveTodo();
-};
-
-//todoList전체 완료 혹은 전체 취소
-const checkAll = () => {
-  todoList.forEach((item) => (item.isDone = true));
-  saveTodo();
-  renderTodo(todoList);
-};
-
-//todo 일부 체크 기능
-const completeTodo = (e) => {
-  const { id } = e.parentElement.parentElement;
-  todoList.forEach((item) => {
-    if (item.id === parseInt(id)) {
-      item.isDone = !item.isDone;
+    else {
+        const newTodo = { id: Date.now(), task: task, isDone: false };
+        todoList.push(newTodo);
+        todoInput.value = "";
+        paintTodo(todoList);
     }
-  });
-  saveTodo();
-  renderTodo(todoList);
 };
-
-//filter
-const filterTodo = () => {
-  todoList.sort((a, b) => b.isDone - a.isDone);
-  saveTodo();
-  renderTodo(todoList);
+//renderTodo
+//경우
+//1. 새로 만들어지는 경우 => 전체가 다시 필요는 없어 : 그러면 이경우는 제외해도 ㅇㅋ?
+//2. 수정되는 경우
+//3. 삭제 되는 경우
+//4. 순번이 바뀌는 경우
+//어차피 지금 리스트를 리턴해주니까 그냥 받아서  렌더랑 같이해도 갠춘을것 같음
+const paintTodo = (todoLists) => {
+    todoUl.innerHTML = "";
+    todoLists.forEach((item) => {
+        const { id, isDone, task } = item;
+        return (todoUl.innerHTML += `<li class="todo-item-list"  id=${id}>
+      <div class="todo-item-div">
+        <input class=" mx-2" type="checkbox" ${isDone && "checked"}  onclick="completeTodo(this)"/>
+        <div id="todo-text" class="${isDone && "todo-text-div"}">${task}</div>
+      </div>
+    <div>
+    <button onclick="updateReadyTodo(this)" type="button" >📝</button>
+    <button onclick="deleteTodo(this)"  type="button">❌</button>
+    </div>
+    </li>`);
+    });
 };
-
-todoForm.addEventListener("submit", makeTodo);
-todoForm.addEventListener("submit", makeTodo);
-todoBtn.addEventListener("click", makeTodo);
-checkedAll.addEventListener("click", checkAll);
-filterBtn.addEventListener("click", filterTodo);
+todoForm.addEventListener("submit", sumbitTodo);
