@@ -11,27 +11,31 @@
   </head>
   <body>
     <header
-      class="flex items-center justify-between mx-auto max-w-3xl p-5 border-b-2 border-b-[#9ca3af]"
+      class="flex items-center justify-center mx-auto max-w-3xl p-5 border-b-2 border-b-[#9ca3af]"
     >
-      <div class="flex items-center justify-evenly w-4/5">
-        <h2 class="text-3xl font-bold text-[#3D4451]">ToDo :</h2>
-        <form id="makeTodo" class="w-4/5">
-          <input
-            class="w-full"
-            type="text"
-            placeholder="오늘의 할일을 적어주세요"
-          />
-        </form>
-      </div>
-      <div id="btn-box" class="flex items-center justify-evenly">
+      <form id="makeTodo" class="w-4/5 flex">
+        <input
+          class="w-full"
+          type="text"
+          placeholder="오늘의 할일을 적어주세요"
+        />
         <button id="makeToDoBtn" class="m-1" type="submit">Enter</button>
+      </form>
+      <div id="btn-box" class="flex items-center justify-evenly">
         <button id="checkAll" class="m-1" type="button">All</button>
         <button class="m-1" type="button" id="filterCheck">Filter</button>
       </div>
     </header>
-    <main>
+    <main class="">
       <section id="todoList" class="todo-section">
         <ul id="todoUl" class="w-full"></ul>
+      </section>
+      <section
+        class="flex flex-col items-center justify-start mx-auto max-w-3xl p-5"
+      >
+        <div id="done-section">
+          <p><span>오늘 완료한 일</span> <span id="count">개수</span></p>
+        </div>
       </section>
     </main>
   </body>
