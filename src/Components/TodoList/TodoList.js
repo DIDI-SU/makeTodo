@@ -1,7 +1,7 @@
 const TodoList = ({ children }) => {
   return (
-    <section id="todoList" class="todo-section">
-      <ul id="todoUl" class="w-full">
+    <section id="todoList" className="todo-section">
+      <ul id="todoUl" className="w-full">
         {children}
       </ul>
     </section>

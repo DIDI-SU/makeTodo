@@ -6,9 +6,9 @@ const TODO_BTN = [
 ];
 const TodoItem = () => {
   return (
-    <li class="todo-item-list" draggable="true">
-      <div class="todo-item-div">
-        <input class=" mx-2" type="checkbox" />
+    <li className="todo-item-list" draggable="true">
+      <div className="todo-item-div">
+        <input className=" mx-2" type="checkbox" />
         <div id="todo-text"></div>
       </div>
       <div>
