@@ -1,7 +1,14 @@
-const Btn = ({ children }) => {
-  const { id, className, type, title } = children;
+const Btn = ({ children, handleTodo }) => {
+  const { id, className, type, title, name } = children;
   return (
-    <button id={id} className={className} type={type}>
+    <button
+      name={name}
+      id={id}
+      className={className}
+      type={type}
+      key={id + 1}
+      onClick={(e) => handleTodo(e)}
+    >
       {title}
     </button>
   );

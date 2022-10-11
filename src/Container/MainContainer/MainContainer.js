@@ -1,6 +1,6 @@
 const MainContainer = ({ children }) => {
   return (
-    <section className="flex  items-center justify-start mx-auto max-w-3xl p-5">
+    <section id="todoList" className="todo-section">
       {children}
     </section>
   );

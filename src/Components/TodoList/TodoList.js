@@ -1,10 +1,19 @@
-const TodoList = ({ children }) => {
+import TodoItem from "../TodoItem/TodoItem";
+const TodoList = ({ todoLists, handleTodo }) => {
   return (
-    <section id="todoList" className="todo-section">
-      <ul id="todoUl" className="w-full">
-        {children}
-      </ul>
-    </section>
+    <ul id="todoUl" className="w-full">
+      {todoLists.map(({ id, task, isDone }) => {
+        return (
+          <TodoItem
+            id={id}
+            task={task}
+            isDone={isDone}
+            key={id + "test"}
+            handleTodo={handleTodo}
+          />
+        );
+      })}
+    </ul>
   );
 };
 export default TodoList;

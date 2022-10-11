@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.todo-item-list {
+  @apply flex items-center justify-between py-1;
+}
+
+.todo-item-div {
+  @apply flex items-center justify-evenly py-3;
+}
+
+.todo-text-div {
+  @apply line-through text-[#9CB7D8];
+}
+
+.todo-section {
+  @apply flex flex-col items-center justify-center mx-auto max-w-3xl p-5 border-b  border-b-[#9CB7D8];
+}
