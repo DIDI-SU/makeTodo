@@ -1,6 +1,5 @@
 import Form from "../Form/Form";
 import Btn from "../Btn/Btn";
-import { useState } from "react";
 const SUBMIT_BTN = {
   id: "makeTodo",
   className: "m-1",
@@ -31,6 +30,7 @@ const Header = ({
   userInput,
   setUserInput,
   editedId,
+  updateTodo,
 }) => {
   const makeTodo = (e) => {
     e.preventDefault();
@@ -41,9 +41,10 @@ const Header = ({
       if (!isEdit) {
         setTodoLists((prve) => [
           {
+            userId: JSON.parse(localStorage.getItem("USER").userId),
             id: Date.now(),
-            task: userInput,
-            isDone: false,
+            title: userInput,
+            completed: false,
           },
           ...prve,
         ]);
@@ -54,14 +55,15 @@ const Header = ({
             if (item.id === editedId) {
               return {
                 ...item,
-                task: userInput,
-                isDone: item.isDone,
+                title: userInput,
+                completed: item.isDone,
               };
             } else {
               return item;
             }
           })
         );
+        updateTodo(editedId);
         setUserInput("");
         isEdit(false);
       }
@@ -82,7 +84,7 @@ const Header = ({
         setUserInput={setUserInput}
         userInput={userInput}
       >
-        <Btn children={SUBMIT_BTN} />
+        <Btn children={SUBMIT_BTN} handleTodo={makeTodo} />
       </Form>
       <div id="btn-box" className="flex items-center justify-evenly">
         {BTN_DATA?.map((data) => (

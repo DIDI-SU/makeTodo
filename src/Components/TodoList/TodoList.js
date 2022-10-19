@@ -2,17 +2,16 @@ import TodoItem from "../TodoItem/TodoItem";
 const TodoList = ({ todoLists, handleTodo }) => {
   return (
     <ul id="todoUl" className="w-full">
-      {todoLists.map(({ id, task, isDone }) => {
-        return (
-          <TodoItem
-            id={id}
-            task={task}
-            isDone={isDone}
-            key={id + "test"}
-            handleTodo={handleTodo}
-          />
-        );
-      })}
+      {todoLists &&
+        todoLists.map(({ id, attributes }) => {
+          return (
+            <TodoItem
+              attributes={attributes}
+              deleteId={id}
+              handleTodo={handleTodo}
+            />
+          );
+        })}
     </ul>
   );
 };
