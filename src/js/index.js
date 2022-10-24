@@ -3,20 +3,16 @@ const todoInput = todoForm.querySelector("input");
 //todoList
 const todoListBox = document.querySelector("#todoList");
 const todoUl = todoListBox.querySelector("#todoUl");
-const checkedBox = todoUl.querySelectorAll("#checkedbox");
-const todoItem = todoUl.querySelector(".todo-item-div");
-const nothing = todoListBox.querySelector("#nothing");
 //heratBtn
 const btnBox = document.querySelector("#btn-box");
-const todoBtn = btnBox.querySelector("#makeToDoBtn");
-const checkedAll = btnBox.querySelector("#checkAll");
-const filterBtn = btnBox.querySelector("#filterCheck");
-
-const todoCount = document.querySelector("#todoCount");
+//doneCounter
+const doneSection = document.querySelector("#done-section");
 
 let editedId = "";
 let todoList = [];
 let isEdit = false;
+let count = 0;
+let ul = "";
 
 const todoItems = JSON.parse(localStorage.getItem("todo")) || null;
 
@@ -49,54 +45,40 @@ const makeTodo = (event) => {
         isDone: false,
       };
       todoList.push(newTodo);
-      showTodo(newTodo);
+      paintTodo(todoList);
       saveTodo();
     } else updateTodo(inputString);
   }
 };
 
-const renderTodo = (todoLists) => {
+const paintTodo = (todoLists) => {
+  const counterP = doneSection.querySelector("#count");
   todoUl.innerHTML = "";
-
   todoLists.forEach(({ id, task, isDone }) => {
-    return (todoUl.innerHTML += `<li class="todo-item-list"  id=${id}>
-    <div class="todo-item-div">
-      <input class=" mx-2" type="checkbox" ${
-        isDone && "checked"
-      }  onclick="completeTodo(this)"/>
-      <div id="todo-text" class="${isDone && "todo-text-div"}">${task}</div>
+    return (todoUl.innerHTML += `
+  <li class="todo-item-list" id="${id}" draggable="true" >
+      <div class="todo-item-div">
+        <input class=" mx-2" type="checkbox" ${
+          isDone && "checked"
+        }  onclick="completeTodo(this)"/>
+        <div id="todo-text" class="${isDone && "todo-text-div"}">${task}</div>
+      </div>
+    <div>
+    <button onclick="updateReadyTodo(this)" type="button" >📝</button>
+    <button onclick="deleteTodo(this)"  type="button">❌</button>
     </div>
-  <div>
-  <button onclick="updateReadyTodo(this)" type="button" >📝</button>
-  <button onclick="deleteTodo(this)"  type="button">❌</button>
-  </div>
-  </li>`);
+    </li>`);
   });
-};
 
-//만든 todo 보여주기
-const showTodo = (newTodos) => {
-  const { id, task, isDone } = newTodos;
-  let todoComponent = `<li class="todo-item-list"  id=${id}>
-    <div class="todo-item-div">
-      <input class=" mx-2" type="checkbox" ${
-        isDone && "checked"
-      }  onclick="completeTodo(this)"/>
-      <div id="todo-text"  class="${isDone && "todo-text-div"}">${task}</div>
-    </div>
-  <div>
-  <button onclick="updateReadyTodo(this)" type="button" >📝</button>
-  <button onclick="deleteTodo(this)"  type="button">❌</button>
-  </div>
-  </li>`;
-
-  todoUl.innerHTML += todoComponent;
+  let copyArray = [...todoLists];
+  let length = copyArray.filter(({ isDone }) => isDone === true).length;
+  counterP.innerText = length + "개";
 };
 
 if (todoItems !== null) {
   let storageItems = JSON.parse(localStorage.getItem("todo"));
   todoList = storageItems;
-  storageItems.forEach(showTodo);
+  paintTodo(todoList);
 }
 
 //todo update ready
@@ -119,7 +101,7 @@ const updateTodo = (text) => {
   editedId = "";
   todoInput.value = "";
   saveTodo();
-  renderTodo(todoList);
+  paintTodo(todoList);
 };
 
 //delete
@@ -129,13 +111,19 @@ const deleteTodo = (e) => {
   parentElement.parentElement.remove();
   todoList = todoList.filter((item) => item.id !== parseInt(id));
   saveTodo();
+  paintTodo(todoList);
 };
 
 //todoList전체 완료 혹은 전체 취소
-const checkAll = () => {
-  todoList.forEach((item) => (item.isDone = true));
+const btnHandler = (e) => {
+  const { id } = e.target;
+  if (id === "checkAll") {
+    todoList.forEach((item) => (item.isDone = true));
+  } else {
+    todoList.sort((a, b) => b.isDone - a.isDone);
+  }
   saveTodo();
-  renderTodo(todoList);
+  paintTodo(todoList);
 };
 
 //todo 일부 체크 기능
@@ -147,18 +135,10 @@ const completeTodo = (e) => {
     }
   });
   saveTodo();
-  renderTodo(todoList);
+  paintTodo(todoList);
 };
 
 //filter
-const filterTodo = () => {
-  todoList.sort((a, b) => b.isDone - a.isDone);
-  saveTodo();
-  renderTodo(todoList);
-};
 
 todoForm.addEventListener("submit", makeTodo);
-todoForm.addEventListener("submit", makeTodo);
-todoBtn.addEventListener("click", makeTodo);
-checkedAll.addEventListener("click", checkAll);
-filterBtn.addEventListener("click", filterTodo);
+btnBox.addEventListener("click", btnHandler);
