@@ -15,5 +15,5 @@
 }
 
 .todo-section {
-  @apply flex flex-col items-center justify-center mx-auto max-w-3xl p-5;
+  @apply flex flex-col items-center justify-center mx-auto max-w-3xl p-5 border-b  border-b-[#9CB7D8];
 }
