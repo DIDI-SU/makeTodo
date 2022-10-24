@@ -8,44 +8,46 @@ function App() {
     localStorage.setItem("USER", JSON.stringify({ userId: 1, isLogin: true }));
   }, []);
 
-  const user = JSON.parse(localStorage.getItem("USER"));
-
   const [todoLists, setTodoLists] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [editedId, setEditedId] = useState(0);
+
+  useEffect(() => {
+    getUserTodo();
+  }, []);
 
   async function getUserTodo() {
     let data = await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos`);
     let userData = await data.json();
     setTodoLists(userData.data);
   }
-
-  useEffect(() => {
+  console.log(todoLists);
+  async function addTodo(body) {
+    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos`, {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
     getUserTodo();
-  }, []);
+  }
 
   async function deleteTodo(id) {
     await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${id}`, {
       method: "DELETE",
     });
-    console.log(todoLists);
+    getUserTodo();
   }
 
-  async function updateTodo(id) {
-    const oldTodo = todoLists.find((item) => parseInt(item.userId) === id);
-    let data = await fetch("https://jsonplaceholder.typicode.com/posts/1", {
+  async function updateTodo(body) {
+    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${editedId}`, {
       method: "PUT",
-      body: JSON.stringify({
-        id: oldTodo.id,
-        title: oldTodo.title,
-        completed: oldTodo.completed,
-        userId: oldTodo.userId,
-      }),
       headers: {
-        "Content-type": "application/json; charset=UTF-8",
+        "Content-type": "application/json",
       },
+      body: JSON.stringify(body),
     });
+    getUserTodo();
   }
 
   const handleTodo = (e) => {
@@ -55,9 +57,10 @@ function App() {
       deleteTodo(id);
       getUserTodo();
     } else if (name === "edit") {
-      const { id } = e.target.parentNode.parentNode;
-
-      setUserInput(todoLists.find((item) => item.id === parseInt(id)).title);
+      const { id } = e.target.parentNode;
+      setUserInput(
+        todoLists.find((item) => item.id === parseInt(id)).attributes.task
+      );
       setIsEdit(true);
       setEditedId(parseInt(id));
     }
@@ -68,10 +71,13 @@ function App() {
       <Header
         userInput={userInput}
         setUserInput={setUserInput}
+        getUserTodo={getUserTodo}
         todoLists={todoLists}
+        addTodo={addTodo}
         updateTodo={updateTodo}
-        setTodoLists={setTodoLists}
+        // setTodoLists={setTodoLists}
         isEdit={isEdit}
+        setIsEdit={setIsEdit}
         editedId={editedId}
       />
       <Main todoLists={todoLists} handleTodo={handleTodo} />

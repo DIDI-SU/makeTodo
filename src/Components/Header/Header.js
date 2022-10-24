@@ -24,8 +24,10 @@ const BTN_DATA = [
   },
 ];
 const Header = ({
+  addTodo,
+  getUserTodo,
   todoLists,
-  setTodoLists,
+  setIsEdit,
   isEdit,
   userInput,
   setUserInput,
@@ -39,33 +41,28 @@ const Header = ({
       setUserInput("");
     } else {
       if (!isEdit) {
-        setTodoLists((prve) => [
-          {
-            userId: JSON.parse(localStorage.getItem("USER").userId),
-            id: Date.now(),
-            title: userInput,
-            completed: false,
-          },
-          ...prve,
-        ]);
+        let newTodo = {
+          userId: JSON.parse(localStorage.getItem("USER")).userId,
+          task: userInput,
+          isCompleted: false,
+          taskId: Date.now(),
+        };
+        let body = { data: { ...newTodo } };
+        addTodo(body);
+        newTodo = "";
         setUserInput("");
       } else {
-        setTodoLists(
-          todoLists.map((item) => {
-            if (item.id === editedId) {
-              return {
-                ...item,
-                title: userInput,
-                completed: item.isDone,
-              };
-            } else {
-              return item;
-            }
-          })
-        );
-        updateTodo(editedId);
+        let updatedTodo = {
+          userId: JSON.parse(localStorage.getItem("USER")).userId,
+          task: userInput,
+          isCompleted: false,
+          taskId: editedId,
+        };
+        let body = { data: { ...updatedTodo } };
+        console.log(body);
+        updateTodo(body);
         setUserInput("");
-        isEdit(false);
+        setIsEdit(false);
       }
     }
   };
