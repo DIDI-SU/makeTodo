@@ -1,5 +1,7 @@
 import Form from "../Form/Form";
 import Btn from "../Btn/Btn";
+import { LoadingContext } from "../../Context/LoadingContext";
+import { useContext } from "react";
 const SUBMIT_BTN = {
   id: "makeTodo",
   className: "m-1",
@@ -24,16 +26,15 @@ const BTN_DATA = [
   },
 ];
 const Header = ({
-  addTodo,
-  getUserTodo,
-  todoLists,
   setIsEdit,
   isEdit,
   userInput,
   setUserInput,
-  editedId,
   updateTodo,
+  createTodo,
 }) => {
+  const { editedId } = useContext(LoadingContext);
+
   const makeTodo = (e) => {
     e.preventDefault();
     if (!checkBlank(userInput)) {
@@ -48,8 +49,7 @@ const Header = ({
           taskId: Date.now(),
         };
         let body = { data: { ...newTodo } };
-        addTodo(body);
-        newTodo = "";
+        createTodo(body);
         setUserInput("");
       } else {
         let updatedTodo = {
@@ -59,7 +59,6 @@ const Header = ({
           taskId: editedId,
         };
         let body = { data: { ...updatedTodo } };
-        console.log(body);
         updateTodo(body);
         setUserInput("");
         setIsEdit(false);

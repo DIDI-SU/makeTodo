@@ -1,5 +1,5 @@
 import TodoItem from "../TodoItem/TodoItem";
-const TodoList = ({ todoLists, handleTodo }) => {
+const TodoList = ({ todoLists, handleTodo, isDone, setIsDone }) => {
   return (
     <ul id="todoUl" className="w-full">
       {todoLists &&
@@ -7,8 +7,10 @@ const TodoList = ({ todoLists, handleTodo }) => {
           return (
             <TodoItem
               attributes={attributes}
-              deleteId={id}
+              id={id}
               handleTodo={handleTodo}
+              isDone={isDone}
+              setIsDone={setIsDone}
             />
           );
         })}

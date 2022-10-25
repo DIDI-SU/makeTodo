@@ -1,6 +1,8 @@
 import Header from "./Components/Header/Header";
 import Main from "./pages/Main/Main";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { LoadingContext } from "./Context/LoadingContext";
+import axios from "axios";
 
 function App() {
   //임시 로그인
@@ -11,36 +13,56 @@ function App() {
   const [todoLists, setTodoLists] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [isEdit, setIsEdit] = useState(false);
-  const [editedId, setEditedId] = useState(0);
+  const [isDone, setIsDone] = useState(false);
+
+  const { error, setError, loading, setLoading, id, setId } =
+    useContext(LoadingContext);
 
   useEffect(() => {
     getUserTodo();
   }, []);
 
-  async function getUserTodo() {
-    let data = await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos`);
-    let userData = await data.json();
-    setTodoLists(userData.data);
-  }
-  console.log(todoLists);
-  async function addTodo(body) {
-    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos`, {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    getUserTodo();
-  }
+  //초기값을 get 해오는 함수
+  const getUserTodo = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND}api/to-dos`
+      );
+      return setTodoLists(response.data.data);
+    } catch (e) {
+      setError(e);
+    }
+    setLoading(false);
+  };
 
-  async function deleteTodo(id) {
-    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${id}`, {
-      method: "DELETE",
-    });
-    getUserTodo();
-  }
+  //todo를 만들어주는 함수
+  const createTodo = async (body) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND}api/to-dos`,
+        { ...body }
+      );
+      console.log(response.status);
+      getUserTodo();
+    } catch (e) {
+      setError(e);
+    }
+  };
+
+  const deleteTodo = async (todoId) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_BACKEND}api/to-dos/${todoId}`
+      );
+      console.log(response.status);
+    } catch (e) {
+      setError(e);
+    }
+  };
 
   async function updateTodo(body) {
-    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${editedId}`, {
+    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${id}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
@@ -53,16 +75,16 @@ function App() {
   const handleTodo = (e) => {
     const { name } = e.target;
     if (name === "delete") {
-      const { id } = e.target.parentNode;
+      const { id } = e.target.parentNode.parentNode;
       deleteTodo(id);
       getUserTodo();
     } else if (name === "edit") {
-      const { id } = e.target.parentNode;
+      const { id } = e.target.parentNode.parentNode;
       setUserInput(
         todoLists.find((item) => item.id === parseInt(id)).attributes.task
       );
       setIsEdit(true);
-      setEditedId(parseInt(id));
+      setId(parseInt(id));
     }
   };
 
@@ -70,17 +92,22 @@ function App() {
     <>
       <Header
         userInput={userInput}
+        createTodo={createTodo}
         setUserInput={setUserInput}
         getUserTodo={getUserTodo}
         todoLists={todoLists}
-        addTodo={addTodo}
         updateTodo={updateTodo}
-        // setTodoLists={setTodoLists}
         isEdit={isEdit}
         setIsEdit={setIsEdit}
-        editedId={editedId}
       />
-      <Main todoLists={todoLists} handleTodo={handleTodo} />
+      {loading && (
+        <Main
+          todoLists={todoLists}
+          handleTodo={handleTodo}
+          isDone={isDone}
+          setIsDone={setIsDone}
+        />
+      )}
     </>
   );
 }
