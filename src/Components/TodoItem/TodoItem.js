@@ -1,5 +1,6 @@
 import Btn from "../Btn/Btn";
-
+import { LoadingContext } from "../../Context/LoadingContext";
+import { useContext, useEffect, useState } from "react";
 const TODO_BTN = [
   { id: "editBtn", type: "button", className: "", title: "📝", name: "edit" },
   {
@@ -10,8 +11,25 @@ const TODO_BTN = [
     name: "delete",
   },
 ];
-const TodoItem = ({ attributes, handleTodo, id, isDone, setIsDone }) => {
-  const { isCompleted, task, userId } = attributes;
+const TodoItem = ({ attributes, handleTodo, id, updateTodo }) => {
+  const { editedId, setEditedId } = useContext(LoadingContext);
+  const { isCompleted, task } = attributes;
+  const [isDone, setIsDone] = useState(isCompleted);
+
+  const handleDone = (ids) => {
+    setEditedId(ids);
+    if (parseInt(editedId) === parseInt(ids)) {
+      setIsDone((prve) => !prve);
+      let updatedTodo = {
+        userId: JSON.parse(localStorage.getItem("USER")).userId,
+        task: task,
+        isCompleted: !isDone,
+        taskId: editedId,
+      };
+      let body = { data: { ...updatedTodo } };
+      updateTodo(body);
+    }
+  };
 
   return (
     <li className="todo-item-list" draggable="true" id={id}>
@@ -20,8 +38,8 @@ const TodoItem = ({ attributes, handleTodo, id, isDone, setIsDone }) => {
           className=" mx-2"
           type="checkbox"
           checked={isDone}
-          onChange={() => {
-            setIsDone((prve) => !prve);
+          onChange={(e) => {
+            handleDone(e.target.parentNode.parentNode.id);
           }}
         />
         <div id="todo-text">{task}</div>

@@ -2,7 +2,7 @@ import MainContainer from "../../Container/MainContainer/MainContainer";
 import TodoList from "../../Components/TodoList/TodoList";
 import Nodata from "../../Components/Nodata/Nodata";
 
-const Main = ({ todoLists, handleTodo, isDone, setIsDone }) => {
+const Main = ({ todoLists, handleTodo, updateTodo }) => {
   return (
     <main>
       <MainContainer>
@@ -10,8 +10,7 @@ const Main = ({ todoLists, handleTodo, isDone, setIsDone }) => {
           <TodoList
             todoLists={todoLists}
             handleTodo={handleTodo}
-            isDone={isDone}
-            setIsDone={setIsDone}
+            updateTodo={updateTodo}
           />
         ) : (
           <Nodata />

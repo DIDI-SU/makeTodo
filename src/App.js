@@ -13,9 +13,8 @@ function App() {
   const [todoLists, setTodoLists] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [isEdit, setIsEdit] = useState(false);
-  const [isDone, setIsDone] = useState(false);
 
-  const { error, setError, loading, setLoading, id, setId } =
+  const { setError, loading, setLoading, editedId, setEditedId } =
     useContext(LoadingContext);
 
   useEffect(() => {
@@ -62,7 +61,7 @@ function App() {
   };
 
   async function updateTodo(body) {
-    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${id}`, {
+    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${editedId}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
@@ -84,7 +83,7 @@ function App() {
         todoLists.find((item) => item.id === parseInt(id)).attributes.task
       );
       setIsEdit(true);
-      setId(parseInt(id));
+      setEditedId(parseInt(id));
     }
   };
 
@@ -104,8 +103,7 @@ function App() {
         <Main
           todoLists={todoLists}
           handleTodo={handleTodo}
-          isDone={isDone}
-          setIsDone={setIsDone}
+          updateTodo={updateTodo}
         />
       )}
     </>
