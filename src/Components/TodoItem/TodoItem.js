@@ -1,6 +1,6 @@
 import Btn from "../Btn/Btn";
 import { LoadingContext } from "../../Context/LoadingContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 const TODO_BTN = [
   { id: "editBtn", type: "button", className: "", title: "📝", name: "edit" },
   {

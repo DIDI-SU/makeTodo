@@ -73,12 +73,11 @@ function App() {
 
   const handleTodo = (e) => {
     const { name } = e.target;
+    const { id } = e.target.parentNode.parentNode;
     if (name === "delete") {
-      const { id } = e.target.parentNode.parentNode;
       deleteTodo(id);
       getUserTodo();
     } else if (name === "edit") {
-      const { id } = e.target.parentNode.parentNode;
       setUserInput(
         todoLists.find((item) => item.id === parseInt(id)).attributes.task
       );
