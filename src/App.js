@@ -26,7 +26,7 @@ function App() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND}api/to-dos`
+        `${process.env.REACT_APP_BACKEND}api/todos`
       );
       return setTodoLists(response.data.data);
     } catch (e) {
@@ -39,7 +39,7 @@ function App() {
   const createTodo = async (body) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}api/to-dos`,
+        `${process.env.REACT_APP_BACKEND}api/todos`,
         { ...body }
       );
       console.log(response.status);
@@ -52,7 +52,7 @@ function App() {
   const deleteTodo = async (todoId) => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_BACKEND}api/to-dos/${todoId}`
+        `${process.env.REACT_APP_BACKEND}api/todos/${todoId}`
       );
       console.log(response.status);
     } catch (e) {
@@ -61,7 +61,7 @@ function App() {
   };
 
   async function updateTodo(body) {
-    await fetch(`${process.env.REACT_APP_BACKEND}api/to-dos/${editedId}`, {
+    await fetch(`${process.env.REACT_APP_BACKEND}api/todos/${editedId}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",

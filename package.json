@@ -13,11 +13,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node dist/server/main.js",
-    "build": "npm run build-client && npm run build-server",
-		"build-client": "webpack --node-env production --config webpack.prod.ts",
-    "build-server": "webpack --node-env production --config webpack.server.ts",
-    "heroku-prebuild": "npm install",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
